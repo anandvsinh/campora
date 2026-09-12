@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Shield, ShieldCheck, CheckCircle2, XCircle, Trash2, Edit3, Lock, Key, AlertCircle, RefreshCw, Flame, Plus, PlusCircle, X, Sparkles } from 'lucide-react';
+import { Shield, ShieldCheck, CheckCircle2, XCircle, Trash2, Edit3, Lock, Key, AlertCircle, RefreshCw, Flame, Plus, PlusCircle, X, Sparkles, Upload } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { 
