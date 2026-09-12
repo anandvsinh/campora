@@ -25,7 +25,6 @@ export function AppProvider({ children }) {
     return INITIAL_GIGS;
   });
 
-  const [students, setStudents] = useState(STUDENT_PROFILES);
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
 
   const [openJobs, setOpenJobs] = useState(() => {
@@ -305,6 +304,91 @@ export function AppProvider({ children }) {
     navigateTo('job-board');
   };
 
+  const [students, setStudents] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('campora_students');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+    }
+    return STUDENT_PROFILES;
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('campora_students', JSON.stringify(students));
+    }
+  }, [students]);
+
+  // Admin feature: Create Student User Profile
+  const createStudentProfile = async (data) => {
+    const newStudent = {
+      id: `student-${Date.now().toString().slice(-4)}`,
+      name: data.name,
+      avatar: data.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      verified: true,
+      college: data.college || 'GLA University',
+      course: data.course || 'B.Tech Computer Science (3rd Year)',
+      campus: data.campus || data.college || 'GLA Mathura',
+      primarySkill: data.primarySkill || 'UI/UX & Brand Design',
+      category: data.category || 'graphic-design',
+      bio: data.bio || 'Verified student talent on CAMPORA.',
+      rating: 5.0,
+      reviewsCount: 0,
+      completedProjects: 0,
+      startingPrice: Number(data.startingPrice) || 499,
+      availability: 'Available',
+      trustScore: Number(data.trustScore) || 95,
+      responseRate: '100%',
+      repeatCustomers: 0,
+      badges: ['Verified Student', 'Rising Talent'],
+      skills: data.skills ? (Array.isArray(data.skills) ? data.skills : data.skills.split(',').map(s => s.trim())) : ['Design', 'Creative'],
+      portfolio: [],
+      services: [],
+      workHistory: []
+    };
+
+    setStudents(prev => [newStudent, ...prev]);
+    setNotifications(prev => [
+      {
+        id: `n-${Date.now()}`,
+        title: 'Student User Profile Created!',
+        message: `Profile for ${newStudent.name} (${newStudent.college}) was added by admin.`,
+        time: 'Just now',
+        read: false
+      },
+      ...prev
+    ]);
+
+    try {
+      fetch(`${API_BASE}/students`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStudent)
+      }).catch(err => console.warn('API sync warn', err));
+    } catch(e){}
+
+    return newStudent;
+  };
+
+  // Admin feature: Delete Student Profile
+  const deleteStudentProfile = async (id) => {
+    setStudents(prev => prev.filter(s => s.id !== id));
+    setNotifications(prev => [
+      {
+        id: `n-${Date.now()}`,
+        title: 'Student Profile Deleted',
+        message: `Student profile was removed by administrator.`,
+        time: 'Just now',
+        read: false
+      },
+      ...prev
+    ]);
+  };
+
   // Admin moderation: Delete Service
   const deleteService = async (serviceId) => {
     deleteGig(serviceId);
@@ -471,6 +555,8 @@ export function AppProvider({ children }) {
     publishGig,
     deleteGig,
     students,
+    createStudentProfile,
+    deleteStudentProfile,
     selectedStudent,
     setSelectedStudent,
     selectedService,

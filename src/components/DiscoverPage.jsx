@@ -1,8 +1,8 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { SKILL_CATEGORIES } from '../data/mockData';
+import { SKILL_CATEGORIES, CAMPUS_HUBS } from '../data/mockData';
 import GigCard from './GigCard';
-import { Search, Filter, RefreshCw } from 'lucide-react';
+import { Search, Filter, RefreshCw, Building2, X } from 'lucide-react';
 
 export default function DiscoverPage() {
   const { gigs, searchParams, setSearchParams } = useApp();
@@ -19,6 +19,14 @@ export default function DiscoverPage() {
 
     if (searchParams.category !== 'all' && gig.category !== searchParams.category) {
       return false;
+    }
+
+    if (searchParams.campus && searchParams.campus !== 'all') {
+      const gigCollege = (gig.college || gig.campus || '').toLowerCase();
+      const targetCampus = searchParams.campus.toLowerCase();
+      if (!gigCollege.includes(targetCampus) && !targetCampus.includes(gigCollege)) {
+        return false;
+      }
     }
 
     if (gig.price > searchParams.maxPrice) {
@@ -43,14 +51,30 @@ export default function DiscoverPage() {
       
       {/* Header */}
       <div className="text-left space-y-2 border-b border-[#F0F9FF]/10 pb-4">
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00B4D8]">
-          Marketplace Skill Gigs
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00B4D8]">
+            Marketplace Skill Gigs
+          </span>
+          {searchParams.campus !== 'all' && (
+            <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Campus: {searchParams.campus}</span>
+              <button 
+                onClick={() => setSearchParams(prev => ({ ...prev, campus: 'all' }))}
+                className="hover:text-white ml-1"
+                title="Clear campus filter"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          )}
+        </div>
+
         <h1 className="font-serif text-4xl sm:text-5xl text-[#F0F9FF]">
-          Discover Student Skill Gigs
+          {searchParams.campus !== 'all' ? `${searchParams.campus} Talent Gigs` : 'Discover Student Skill Gigs'}
         </h1>
         <p className="text-xs sm:text-sm text-[#F0F9FF]/70">
-          Showing {filteredGigs.length} verified skill gigs posted by campus creators.
+          Showing {filteredGigs.length} verified skill gigs posted by campus creators {searchParams.campus !== 'all' ? `at ${searchParams.campus}` : 'across universities'}.
         </p>
       </div>
 
@@ -70,7 +94,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* Dropdown Filters Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
           
           {/* Category Dropdown */}
           <div>
@@ -83,6 +107,21 @@ export default function DiscoverPage() {
               <option value="all">All Categories</option>
               {SKILL_CATEGORIES.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Campus Hub Dropdown */}
+          <div>
+            <label className="block text-[10px] font-bold uppercase text-[#00B4D8] mb-1">University Campus</label>
+            <select 
+              value={searchParams.campus}
+              onChange={(e) => setSearchParams(prev => ({ ...prev, campus: e.target.value }))}
+              className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3 py-2 text-[#F0F9FF] focus:outline-none focus:border-[#00B4D8]"
+            >
+              <option value="all">All Campuses</option>
+              {CAMPUS_HUBS.map(h => (
+                <option key={h.id} value={h.name}>{h.name}</option>
               ))}
             </select>
           </div>

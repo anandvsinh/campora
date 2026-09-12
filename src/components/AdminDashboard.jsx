@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Shield, ShieldCheck, CheckCircle2, XCircle, Trash2, Edit3, Lock, Key, AlertCircle, RefreshCw, Flame, Plus, PlusCircle, X, Sparkles, Upload } from 'lucide-react';
+import { Shield, ShieldCheck, CheckCircle2, XCircle, Trash2, Edit3, Lock, Key, AlertCircle, RefreshCw, Flame, Plus, PlusCircle, X, Sparkles, Upload, UserPlus, Users, Award, Star } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { 
@@ -9,6 +9,8 @@ export default function AdminDashboard() {
     rejectVerification, 
     projects, 
     students, 
+    createStudentProfile,
+    deleteStudentProfile,
     openJobs, 
     gigs,
     publishGig,
@@ -21,7 +23,7 @@ export default function AdminDashboard() {
 
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
-  const [activeTab, setActiveTab] = useState('gigs'); // 'gigs' | 'jobs' | 'verifications'
+  const [activeTab, setActiveTab] = useState('gigs'); // 'gigs' | 'jobs' | 'students' | 'verifications'
   const [editModalItem, setEditModalItem] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editPrice, setEditPrice] = useState('');
@@ -38,6 +40,21 @@ export default function AdminDashboard() {
     revisions: '3',
     description: '',
     image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80'
+  });
+
+  // Add Student Profile Modal State
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [newStudentForm, setNewStudentForm] = useState({
+    name: '',
+    college: 'GLA University',
+    course: 'B.Tech Computer Science (3rd Year)',
+    primarySkill: 'UI/UX & Brand Design',
+    category: 'graphic-design',
+    startingPrice: '499',
+    trustScore: '95',
+    skills: 'Figma, Adobe Illustrator, Branding',
+    bio: '',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
   });
 
   const totalGTV = projects.reduce((acc, p) => acc + p.budget, 18500);
@@ -154,7 +171,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs Bar */}
-      <div className="flex items-center gap-2 border-b border-[#F0F9FF]/10 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#F0F9FF]/10 pb-2">
         <button 
           onClick={() => setActiveTab('gigs')}
           className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${activeTab === 'gigs' ? 'bg-purple-600 text-white' : 'text-[#F0F9FF]/70 hover:text-purple-400'}`}
@@ -166,6 +183,12 @@ export default function AdminDashboard() {
           className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${activeTab === 'jobs' ? 'bg-purple-600 text-white' : 'text-[#F0F9FF]/70 hover:text-purple-400'}`}
         >
           Manage Campus Job Posts ({openJobs.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab('students')}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${activeTab === 'students' ? 'bg-purple-600 text-white' : 'text-[#F0F9FF]/70 hover:text-purple-400'}`}
+        >
+          Manage Student Profiles ({students.length})
         </button>
         <button 
           onClick={() => setActiveTab('verifications')}
@@ -269,6 +292,61 @@ export default function AdminDashboard() {
                     >
                       <Trash2 className="w-4 h-4" />
                       <span>Delete Job</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+      {activeTab === 'students' && (
+        <div className="glass-card p-6 border border-emerald-500/30 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0F9FF]/10 pb-3">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Verified Student Creators</span>
+              <h3 className="font-serif text-xl text-[#F0F9FF]">Manage Student User Profiles</h3>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-[#F0F9FF]/50">{students.length} Profiles Active</span>
+              <button 
+                onClick={() => setIsAddStudentModalOpen(true)}
+                className="btn-primary py-2 px-3.5 text-xs bg-emerald-500 hover:bg-emerald-400 text-[#070D14] font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Add New Student Profile</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {students.length === 0 ? (
+              <div className="p-6 text-center text-xs text-[#F0F9FF]/50 italic">No student profiles created yet.</div>
+            ) : (
+              students.map(st => (
+                <div key={st.id} className="p-4 rounded-xl bg-[#070D14] border border-[#F0F9FF]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-3">
+                    <img src={st.avatar} alt={st.name} className="w-12 h-12 rounded-full object-cover border border-emerald-500/30 shrink-0" />
+                    <div>
+                      <div className="font-bold text-[#F0F9FF] text-sm flex items-center gap-2">
+                        <span>{st.name}</span>
+                        <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/30 font-semibold">{st.college}</span>
+                      </div>
+                      <div className="text-[10px] text-[#F0F9FF]/60 mt-0.5">
+                        Course: <strong>{st.course}</strong> · Skill: <strong className="text-emerald-400">{st.primarySkill}</strong> · Starting: <strong className="text-[#00B4D8]">₹{st.startingPrice}</strong> · Trust Score: <strong className="text-amber-400">{st.trustScore}/100</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => deleteStudentProfile(st.id)}
+                      className="p-2 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500 hover:text-white transition-all flex items-center gap-1.5 font-bold text-xs"
+                      title="Delete Student Profile"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete Profile</span>
                     </button>
                   </div>
                 </div>
@@ -560,6 +638,237 @@ export default function AdminDashboard() {
                   className="btn-primary text-xs bg-[#00B4D8] hover:bg-[#00B4D8]/80 text-[#070D14] font-bold"
                 >
                   Publish Skill Gig to Marketplace
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Add New Student User Profile Modal */}
+      {isAddStudentModalOpen && (
+        <div className="fixed inset-0 z-50 bg-[#070D14]/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass-card p-6 max-w-lg w-full border border-emerald-500/40 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#F0F9FF]/10 pb-3">
+              <div className="flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-serif text-2xl text-[#F0F9FF]">Add New Student Profile</h3>
+              </div>
+              <button 
+                onClick={() => setIsAddStudentModalOpen(false)}
+                className="p-1 rounded-lg text-[#F0F9FF]/60 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await createStudentProfile(newStudentForm);
+                setIsAddStudentModalOpen(false);
+                setNewStudentForm({
+                  name: '',
+                  college: 'GLA University',
+                  course: 'B.Tech Computer Science (3rd Year)',
+                  primarySkill: 'UI/UX & Brand Design',
+                  category: 'graphic-design',
+                  startingPrice: '499',
+                  trustScore: '95',
+                  skills: 'Figma, Adobe Illustrator, Branding',
+                  bio: '',
+                  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
+                });
+              }}
+              className="space-y-3 text-xs text-left"
+            >
+              <div>
+                <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Student Full Name *</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="e.g. Vikram Malhotra"
+                  value={newStudentForm.name}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">College University *</label>
+                  <select 
+                    value={newStudentForm.college}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, college: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  >
+                    <option value="GLA University">GLA University</option>
+                    <option value="IIT Delhi">IIT Delhi</option>
+                    <option value="DU South Campus">DU South Campus</option>
+                    <option value="NIFT Mumbai">NIFT Mumbai</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Course & Year *</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="e.g. B.Tech Computer Science (3rd Year)"
+                    value={newStudentForm.course}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, course: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Primary Skill Title *</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="e.g. Motion Graphics & 3D Intro"
+                    value={newStudentForm.primarySkill}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, primarySkill: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Skill Category</label>
+                  <select 
+                    value={newStudentForm.category}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  >
+                    <option value="graphic-design">Graphic Design</option>
+                    <option value="video-editing">Video Editing</option>
+                    <option value="ui-ux">UI/UX Design</option>
+                    <option value="coding">Web Development</option>
+                    <option value="photography">Event Photography</option>
+                    <option value="writing">Content & Copywriting</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Starting Price (₹) *</label>
+                  <input 
+                    type="number" 
+                    required
+                    min={100}
+                    value={newStudentForm.startingPrice}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, startingPrice: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Trust Score (Out of 100)</label>
+                  <input 
+                    type="number" 
+                    required
+                    min={50}
+                    max={100}
+                    value={newStudentForm.trustScore}
+                    onChange={(e) => setNewStudentForm(prev => ({ ...prev, trustScore: e.target.value }))}
+                    className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Skills Tags (Comma Separated)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Figma, Adobe Illustrator, React"
+                  value={newStudentForm.skills}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, skills: e.target.value }))}
+                  className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#F0F9FF] mb-1">Student Bio</label>
+                <textarea 
+                  rows={2}
+                  placeholder="Brief bio describing experience and project passion..."
+                  value={newStudentForm.bio}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, bio: e.target.value }))}
+                  className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2.5 text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              {/* Avatar Upload */}
+              <div className="space-y-2 border-t border-[#F0F9FF]/10 pt-3">
+                <label className="block text-xs font-semibold text-[#F0F9FF]">Profile Avatar Photo (Upload or Link)</label>
+
+                {newStudentForm.avatar && newStudentForm.avatar.startsWith('data:image') ? (
+                  <div className="relative rounded-xl overflow-hidden border border-emerald-500/50 h-28 bg-[#070D14] flex items-center justify-center">
+                    <img src={newStudentForm.avatar} alt="Avatar Upload" className="w-20 h-20 rounded-full object-cover border border-emerald-400" />
+                    <button 
+                      type="button" 
+                      onClick={() => setNewStudentForm(prev => ({ ...prev, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' }))}
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-rose-500/80 text-white hover:bg-rose-600 transition-all shadow-lg"
+                      title="Remove uploaded photo"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-[#F0F9FF]/20 hover:border-emerald-400 rounded-xl p-3 text-center transition-all bg-[#070D14]">
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      id="admin-student-avatar-upload"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setNewStudentForm(prev => ({ ...prev, avatar: reader.result }));
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <label htmlFor="admin-student-avatar-upload" className="cursor-pointer flex flex-col items-center gap-1 text-xs text-[#F0F9FF]/70 hover:text-emerald-400">
+                      <Upload className="w-5 h-5 text-emerald-400" />
+                      <span className="font-bold text-[#F0F9FF]">Upload avatar photo from computer</span>
+                      <span className="text-[10px] text-[#F0F9FF]/40">PNG, JPG (If empty, default avatar is used)</span>
+                    </label>
+                  </div>
+                )}
+
+                <div className="text-[10px] text-[#F0F9FF]/50 text-center uppercase tracking-wider font-semibold">
+                  — OR Paste Avatar URL —
+                </div>
+
+                <input 
+                  type="url" 
+                  placeholder="https://images.unsplash.com/..."
+                  value={newStudentForm.avatar.startsWith('data:image') ? '' : newStudentForm.avatar}
+                  onChange={(e) => setNewStudentForm(prev => ({ ...prev, avatar: e.target.value || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' }))}
+                  className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3.5 py-2 text-xs text-[#F0F9FF] focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#F0F9FF]/10">
+                <button 
+                  type="button" 
+                  onClick={() => setIsAddStudentModalOpen(false)} 
+                  className="btn-secondary text-xs"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn-primary text-xs bg-emerald-500 hover:bg-emerald-400 text-[#070D14] font-bold"
+                >
+                  Create Verified Student Profile
                 </button>
               </div>
             </form>
