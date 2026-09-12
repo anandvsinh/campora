@@ -4,7 +4,7 @@ import { readDB, writeDB } from '../db.js';
 const router = express.Router();
 
 // GET /api/gigs — Fetch all published skill gigs
-router.get('/gigs', (req, res) => {
+router.get('/', (req, res) => {
   const db = readDB();
   let gigs = db.gigs || [];
 
@@ -31,8 +31,16 @@ router.get('/gigs', (req, res) => {
   res.json(gigs);
 });
 
+// GET /api/gigs/:id — Get single gig
+router.get('/:id', (req, res) => {
+  const db = readDB();
+  const gig = (db.gigs || []).find(g => g.id === req.params.id);
+  if (!gig) return res.status(404).json({ error: 'Gig not found' });
+  res.json(gig);
+});
+
 // POST /api/gigs — Create a new published skill gig
-router.post('/gigs', (req, res) => {
+router.post('/', (req, res) => {
   const { title, studentName, college, category, price, deliveryDays, revisions, description, image } = req.body;
 
   if (!title || !price) {
@@ -65,7 +73,7 @@ router.post('/gigs', (req, res) => {
 });
 
 // DELETE /api/gigs/:id — Admin deletion of a skill gig
-router.delete('/gigs/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const db = readDB();
   const gigId = req.params.id;
 
@@ -81,7 +89,7 @@ router.delete('/gigs/:id', (req, res) => {
 });
 
 // PATCH /api/gigs/:id — Admin modification of a skill gig
-router.patch('/gigs/:id', (req, res) => {
+router.patch('/:id', (req, res) => {
   const db = readDB();
   const gigId = req.params.id;
   const { title, price, description } = req.body;
@@ -97,20 +105,6 @@ router.patch('/gigs/:id', (req, res) => {
 
   writeDB(db);
   res.json(gig);
-});
-
-// GET /api/students — Search & filter students
-router.get('/', (req, res) => {
-  const db = readDB();
-  res.json(db.students || []);
-});
-
-// GET /api/students/:id — Get full student profile
-router.get('/:id', (req, res) => {
-  const db = readDB();
-  const student = (db.students || []).find(s => s.id === req.params.id);
-  if (!student) return res.status(404).json({ error: 'Student not found' });
-  res.json(student);
 });
 
 export default router;

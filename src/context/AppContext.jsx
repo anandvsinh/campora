@@ -11,6 +11,7 @@ export function AppProvider({ children }) {
   // Tabs: 'home', 'discover', 'job-board', 'student-profile', 'service-detail', 'project-workspace', 'student-dashboard', 'buyer-dashboard', 'admin', 'wishlist', 'campus-hubs'
   const [currentTab, setCurrentTab] = useState('home');
 
+  const [gigs, setGigs] = useState([]);
   const [students, setStudents] = useState([]);
   const [projects, setProjects] = useState([]);
   const [openJobs, setOpenJobs] = useState([]);
@@ -43,12 +44,25 @@ export function AppProvider({ children }) {
 
   // Fetch initial data from Express REST API
   useEffect(() => {
+    fetchGigs();
     fetchStudents();
     fetchProjects();
     fetchOpenJobs();
     fetchVerifications();
     fetchReviews();
   }, []);
+
+  const fetchGigs = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/students/gigs`);
+      if (res.ok) {
+        const data = await res.json();
+        setGigs(data);
+      }
+    } catch (err) {
+      console.warn('Backend API offline fetching gigs', err);
+    }
+  };
 
   const fetchStudents = async () => {
     try {
@@ -143,10 +157,62 @@ export function AppProvider({ children }) {
     );
   };
 
+  // Publish a new skill gig (Admin or Student) with instant frontend & backend sync
+  const publishGig = async (gigData) => {
+    try {
+      const res = await fetch(`${API_BASE}/students/gigs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(gigData)
+      });
+      if (res.ok) {
+        const newGig = await res.json();
+        setGigs(prev => [newGig, ...prev]);
+        setNotifications(prev => [
+          {
+            id: `n-${Date.now()}`,
+            title: 'Skill Gig Added Live!',
+            message: `Gig "${newGig.title}" is now active in the marketplace.`,
+            time: 'Just now',
+            read: false
+          },
+          ...prev
+        ]);
+        return newGig;
+      }
+    } catch (err) {
+      console.error('API Error publishing gig', err);
+    }
+  };
+
+  // Delete a skill gig (Admin moderation)
+  const deleteGig = async (gigId) => {
+    try {
+      const res = await fetch(`${API_BASE}/students/gigs/${gigId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setGigs(prev => prev.filter(g => g.id !== gigId));
+        setNotifications(prev => [
+          {
+            id: `n-${Date.now()}`,
+            title: 'Gig Removed',
+            message: `Skill gig was removed by platform admin.`,
+            time: 'Just now',
+            read: false
+          },
+          ...prev
+        ]);
+      }
+    } catch (err) {
+      console.error('API Error deleting gig', err);
+    }
+  };
+
   // Publish a new skill service (Students) with instant frontend & backend sync
   const publishService = async (serviceData) => {
     try {
-      const res = await fetch(`${API_BASE}/students/services`, {
+      const res = await fetch(`${API_BASE}/students/gigs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(serviceData)
@@ -154,12 +220,12 @@ export function AppProvider({ children }) {
       if (res.ok) {
         const data = await res.json();
         
-        // Update local React state immediately
+        setGigs(prev => [data, ...prev]);
         setStudents(prev => prev.map(s => {
           if (s.id === (serviceData.studentId || 'student-aarav')) {
             return {
               ...s,
-              services: [data.service, ...(s.services || [])]
+              services: [data, ...(s.services || [])]
             };
           }
           return s;
@@ -388,6 +454,10 @@ export function AppProvider({ children }) {
     switchRole,
     currentTab,
     navigateTo,
+    gigs,
+    setGigs,
+    publishGig,
+    deleteGig,
     students,
     selectedStudent,
     setSelectedStudent,

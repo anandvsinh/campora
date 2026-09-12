@@ -1,40 +1,27 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { SKILL_CATEGORIES, CAMPUS_HUBS } from '../data/mockData';
-import StudentCard from './StudentCard';
-import { Search, Filter, Sparkles, RefreshCw } from 'lucide-react';
+import { SKILL_CATEGORIES } from '../data/mockData';
+import GigCard from './GigCard';
+import { Search, Filter, RefreshCw } from 'lucide-react';
 
 export default function DiscoverPage() {
-  const { students, searchParams, setSearchParams } = useApp();
+  const { gigs, searchParams, setSearchParams } = useApp();
 
-  const filteredStudents = students.filter(student => {
-    // Search query match
+  const filteredGigs = gigs.filter(gig => {
     if (searchParams.query.trim()) {
       const q = searchParams.query.toLowerCase();
-      const matchName = student.name.toLowerCase().includes(q);
-      const matchSkill = student.primarySkill.toLowerCase().includes(q);
-      const matchBio = student.bio.toLowerCase().includes(q);
-      const matchCollege = student.college.toLowerCase().includes(q);
-      if (!matchName && !matchSkill && !matchBio && !matchCollege) return false;
+      const matchTitle = gig.title.toLowerCase().includes(q);
+      const matchStudent = gig.studentName.toLowerCase().includes(q);
+      const bgDesc = gig.description.toLowerCase().includes(q);
+      const matchCollege = gig.college.toLowerCase().includes(q);
+      if (!matchTitle && !matchStudent && !bgDesc && !matchCollege) return false;
     }
 
-    // Category match
-    if (searchParams.category !== 'all' && student.category !== searchParams.category) {
+    if (searchParams.category !== 'all' && gig.category !== searchParams.category) {
       return false;
     }
 
-    // Campus match
-    if (searchParams.campus !== 'all' && student.college !== searchParams.campus) {
-      return false;
-    }
-
-    // Max Price filter
-    if (student.startingPrice > searchParams.maxPrice) {
-      return false;
-    }
-
-    // Rating filter
-    if (student.rating < searchParams.minRating) {
+    if (gig.price > searchParams.maxPrice) {
       return false;
     }
 
@@ -57,13 +44,13 @@ export default function DiscoverPage() {
       {/* Header */}
       <div className="text-left space-y-2 border-b border-[#F0F9FF]/10 pb-4">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00B4D8]">
-          Talent Search & Filtering
+          Marketplace Skill Gigs
         </span>
         <h1 className="font-serif text-4xl sm:text-5xl text-[#F0F9FF]">
-          Discover Verified Student Talent
+          Discover Student Skill Gigs
         </h1>
         <p className="text-xs sm:text-sm text-[#F0F9FF]/70">
-          Showing {filteredStudents.length} verified campus creators matching your criteria.
+          Showing {filteredGigs.length} verified skill gigs posted by campus creators.
         </p>
       </div>
 
@@ -75,7 +62,7 @@ export default function DiscoverPage() {
           <Search className="w-4 h-4 text-[#00B4D8] absolute left-3.5 top-3.5" />
           <input 
             type="text" 
-            placeholder="Search by skill, name, college, or keyword (e.g. poster, website, reels)..."
+            placeholder="Search gigs by skill, poster, title, college, or keyword (e.g. poster, website, reels)..."
             value={searchParams.query}
             onChange={(e) => setSearchParams(prev => ({ ...prev, query: e.target.value }))}
             className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-[#F0F9FF] focus:outline-none focus:border-[#00B4D8]"
@@ -83,7 +70,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* Dropdown Filters Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           
           {/* Category Dropdown */}
           <div>
@@ -96,21 +83,6 @@ export default function DiscoverPage() {
               <option value="all">All Categories</option>
               {SKILL_CATEGORIES.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Campus Hub Dropdown */}
-          <div>
-            <label className="block text-[10px] font-bold uppercase text-[#00B4D8] mb-1">Campus Hub</label>
-            <select 
-              value={searchParams.campus}
-              onChange={(e) => setSearchParams(prev => ({ ...prev, campus: e.target.value }))}
-              className="w-full bg-[#070D14] border border-[#F0F9FF]/10 rounded-xl px-3 py-2 text-[#F0F9FF] focus:outline-none focus:border-[#00B4D8]"
-            >
-              <option value="all">All Campuses</option>
-              {CAMPUS_HUBS.map(h => (
-                <option key={h.id} value={h.name}>{h.name}</option>
               ))}
             </select>
           </div>
@@ -146,15 +118,15 @@ export default function DiscoverPage() {
 
       </div>
 
-      {/* Grid of Results or Empty State */}
-      {filteredStudents.length === 0 ? (
+      {/* Grid of Results */}
+      {filteredGigs.length === 0 ? (
         <div className="glass-card p-12 text-center border border-[#F0F9FF]/10 space-y-4 max-w-md mx-auto">
           <div className="w-12 h-12 rounded-full bg-[#00B4D8]/10 text-[#00B4D8] flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="font-serif text-2xl text-[#F0F9FF]">No student matches found.</h3>
+          <h3 className="font-serif text-2xl text-[#F0F9FF]">No skill gigs found.</h3>
           <p className="text-xs text-[#F0F9FF]/60 font-light">
-            Try adjusting your search query or expanding your price and category filters.
+            Try adjusting your search query or expanding your category filters.
           </p>
           <button onClick={resetFilters} className="btn-primary py-2 px-5 text-xs mx-auto">
             Reset Filters
@@ -162,8 +134,8 @@ export default function DiscoverPage() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStudents.map(student => (
-            <StudentCard key={student.id} student={student} />
+          {filteredGigs.map(gig => (
+            <GigCard key={gig.id} gig={gig} />
           ))}
         </div>
       )}
