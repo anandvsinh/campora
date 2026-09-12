@@ -44,6 +44,16 @@
       ],
       "services": [
         {
+          "id": "srv-6620",
+          "title": "Full Brand Design Package",
+          "description": "Complete brand guidelines and vector assets.",
+          "price": 1999,
+          "deliveryDays": 2,
+          "revisions": 3,
+          "rating": 5,
+          "salesCount": 0
+        },
+        {
           "id": "srv-1",
           "title": "High-Impact Event Poster & Instagram Banner Pack",
           "description": "I will design 1 ultra-sleek main poster + 3 Instagram story formats for your college fest or workshop.",
@@ -229,6 +239,34 @@
       "idCardDoc": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80",
       "submittedAt": "Sep 12, 2026",
       "skillCategory": "Coding & Web Dev"
+    }
+  ],
+  "openJobs": [
+    {
+      "id": "job-501",
+      "title": "Hackathon Demo Video & Reel Pitch Edit",
+      "posterName": "Team Cypher (GDSC)",
+      "posterAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      "campus": "GLA University",
+      "category": "video-editing",
+      "budget": 2500,
+      "deadline": "2026-09-25",
+      "status": "Open",
+      "description": "Looking for a video editor to edit a 60-second high energy project pitch reel for smart campus hackathon.",
+      "postedAt": "Sep 12, 2026"
+    },
+    {
+      "id": "job-502",
+      "title": "E-Cell Annual Summit Sponsorship Pitch Deck",
+      "posterName": "E-Cell IIT Delhi",
+      "posterAvatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+      "campus": "IIT Delhi",
+      "category": "graphic-design",
+      "budget": 3500,
+      "deadline": "2026-09-28",
+      "status": "Open",
+      "description": "Need a designer to create a 12-page high-converting Figma pitch deck for corporate sponsors.",
+      "postedAt": "Sep 12, 2026"
     }
   ]
 }

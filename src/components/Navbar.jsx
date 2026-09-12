@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import CamporaLogo from './CamporaLogo';
-import { Search, Heart, Bell, UserCheck, Shield, ChevronDown, Menu, X, Briefcase, LayoutDashboard, Sparkles } from 'lucide-react';
+import CreateServiceModal from './CreateServiceModal';
+import CreateJobModal from './CreateJobModal';
+import { Search, Heart, Bell, UserCheck, Shield, ChevronDown, Menu, X, Briefcase, LayoutDashboard, Sparkles, Plus } from 'lucide-react';
 
 export default function Navbar() {
   const { currentRole, switchRole, currentTab, navigateTo, wishlist, notifications } = useApp();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [showJobModal, setShowJobModal] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -37,31 +41,27 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-[#F0F9FF]/80">
           <button 
             onClick={() => navigateTo('home')}
-            className={`px-3.5 py-1.5 rounded-full transition-colors ${currentTab === 'home' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
+            className={`px-3 py-1.5 rounded-full transition-colors ${currentTab === 'home' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
           >
             Home
           </button>
           <button 
             onClick={() => navigateTo('discover')}
-            className={`px-3.5 py-1.5 rounded-full transition-colors ${currentTab === 'discover' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
+            className={`px-3 py-1.5 rounded-full transition-colors ${currentTab === 'discover' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
           >
             Discover Talent
           </button>
           <button 
-            onClick={() => navigateTo('campus-hubs')}
-            className={`px-3.5 py-1.5 rounded-full transition-colors ${currentTab === 'campus-hubs' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
+            onClick={() => navigateTo('job-board')}
+            className={`px-3 py-1.5 rounded-full transition-colors ${currentTab === 'job-board' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
           >
-            Campus Hubs
+            Campus Job Board
           </button>
           <button 
-            onClick={() => {
-              const el = document.getElementById('how-it-works');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-              else navigateTo('home');
-            }}
-            className="px-3.5 py-1.5 rounded-full hover:text-[#F0F9FF] transition-colors"
+            onClick={() => navigateTo('campus-hubs')}
+            className={`px-3 py-1.5 rounded-full transition-colors ${currentTab === 'campus-hubs' ? 'text-[#00B4D8] bg-[#00B4D8]/10' : 'hover:text-[#F0F9FF]'}`}
           >
-            How it works
+            Campus Hubs
           </button>
         </nav>
 
@@ -72,7 +72,7 @@ export default function Navbar() {
           <button 
             onClick={() => navigateTo('wishlist')}
             className="relative p-2.5 rounded-full hover:bg-[#F0F9FF]/10 text-[#F0F9FF]/80 hover:text-[#00B4D8] transition-colors"
-            title="Saved Talent (People worth remembering)"
+            title="Saved Talent"
           >
             <Heart className="w-4 h-4" />
             {wishlist.length > 0 && (
@@ -135,61 +135,57 @@ export default function Navbar() {
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between hover:bg-[#00B4D8]/10 transition-colors ${currentRole === 'guest' ? 'text-[#00B4D8] font-bold' : 'text-[#F0F9FF]/80'}`}
                   >
                     <span>👁️ Guest Visitor</span>
-                    {currentRole === 'guest' && <span className="text-[10px] uppercase">Active</span>}
                   </button>
                   <button 
                     onClick={() => { switchRole('student'); setShowRoleMenu(false); }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between hover:bg-[#00B4D8]/10 transition-colors ${currentRole === 'student' ? 'text-emerald-400 font-bold' : 'text-[#F0F9FF]/80'}`}
                   >
                     <span>🎨 Student Seller (Aarav)</span>
-                    {currentRole === 'student' && <span className="text-[10px] uppercase">Active</span>}
                   </button>
                   <button 
                     onClick={() => { switchRole('buyer'); setShowRoleMenu(false); }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between hover:bg-[#00B4D8]/10 transition-colors ${currentRole === 'buyer' ? 'text-cyan-400 font-bold' : 'text-[#F0F9FF]/80'}`}
                   >
                     <span>🏢 Buyer / Club Lead (Apex)</span>
-                    {currentRole === 'buyer' && <span className="text-[10px] uppercase">Active</span>}
                   </button>
                   <button 
                     onClick={() => { switchRole('admin'); setShowRoleMenu(false); }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between hover:bg-[#00B4D8]/10 transition-colors ${currentRole === 'admin' ? 'text-purple-400 font-bold' : 'text-[#F0F9FF]/80'}`}
                   >
                     <span>🛡️ Platform Admin</span>
-                    {currentRole === 'admin' && <span className="text-[10px] uppercase">Active</span>}
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Quick Dashboard Action CTA */}
+          {/* Quick Publishing Buttons */}
           {currentRole === 'student' && (
             <button 
-              onClick={() => navigateTo('student-dashboard')}
-              className="btn-primary py-1.5 px-3.5 text-xs hidden lg:flex"
+              onClick={() => setShowPublishModal(true)}
+              className="btn-primary py-1.5 px-3.5 text-xs hidden lg:flex bg-emerald-500 border-emerald-400"
             >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>Seller Studio</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>Publish Skill</span>
             </button>
           )}
 
           {currentRole === 'buyer' && (
             <button 
-              onClick={() => navigateTo('buyer-dashboard')}
+              onClick={() => setShowJobModal(true)}
               className="btn-primary py-1.5 px-3.5 text-xs hidden lg:flex"
             >
-              <Briefcase className="w-3.5 h-3.5" />
-              <span>My Projects</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>Post Job</span>
             </button>
           )}
 
           {currentRole === 'guest' && (
             <button 
-              onClick={() => switchRole('student')}
+              onClick={() => setShowPublishModal(true)}
               className="btn-primary py-1.5 px-4 text-xs"
             >
-              <span>Offer Your Skill</span>
+              <span>Publish Skill</span>
             </button>
           )}
 
@@ -204,35 +200,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden mt-2 p-4 elevated-card border border-[#00B4D8]/20 space-y-3 animate-in fade-in slide-in-from-top-2">
-          <button 
-            onClick={() => { navigateTo('home'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded-lg text-sm text-[#F0F9FF]/90 hover:bg-[#00B4D8]/10"
-          >
-            Home
-          </button>
-          <button 
-            onClick={() => { navigateTo('discover'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded-lg text-sm text-[#F0F9FF]/90 hover:bg-[#00B4D8]/10"
-          >
-            Discover Talent
-          </button>
-          <button 
-            onClick={() => { navigateTo('campus-hubs'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded-lg text-sm text-[#F0F9FF]/90 hover:bg-[#00B4D8]/10"
-          >
-            Campus Hubs
-          </button>
-          <button 
-            onClick={() => { navigateTo('wishlist'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded-lg text-sm text-[#F0F9FF]/90 hover:bg-[#00B4D8]/10"
-          >
-            Wishlist ({wishlist.length})
-          </button>
-        </div>
-      )}
+      {/* Modals */}
+      {showPublishModal && <CreateServiceModal onClose={() => setShowPublishModal(false)} />}
+      {showJobModal && <CreateJobModal onClose={() => setShowJobModal(false)} />}
+
     </header>
   );
 }

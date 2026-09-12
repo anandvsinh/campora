@@ -8,11 +8,12 @@ const AppContext = createContext();
 export function AppProvider({ children }) {
   // Roles: 'guest', 'student', 'buyer', 'admin'
   const [currentRole, setCurrentRole] = useState('guest');
-  // Tabs: 'home', 'discover', 'student-profile', 'service-detail', 'project-workspace', 'student-dashboard', 'buyer-dashboard', 'admin', 'wishlist', 'campus-hubs'
+  // Tabs: 'home', 'discover', 'job-board', 'student-profile', 'service-detail', 'project-workspace', 'student-dashboard', 'buyer-dashboard', 'admin', 'wishlist', 'campus-hubs'
   const [currentTab, setCurrentTab] = useState('home');
 
   const [students, setStudents] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [openJobs, setOpenJobs] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [wishlist, setWishlist] = useState(['student-aarav', 'student-priya']);
@@ -20,6 +21,7 @@ export function AppProvider({ children }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   const [searchParams, setSearchParams] = useState({
     query: '',
@@ -33,7 +35,7 @@ export function AppProvider({ children }) {
     {
       id: 'notif-1',
       title: 'Backend API Connected',
-      message: 'CAMPORA Express REST API (http://localhost:5000) active.',
+      message: 'CAMPORA Express REST API active.',
       time: 'Just now',
       read: false
     }
@@ -43,6 +45,7 @@ export function AppProvider({ children }) {
   useEffect(() => {
     fetchStudents();
     fetchProjects();
+    fetchOpenJobs();
     fetchVerifications();
     fetchReviews();
   }, []);
@@ -61,7 +64,7 @@ export function AppProvider({ children }) {
         }
       }
     } catch (err) {
-      console.warn('Backend API offline, using fallback state', err);
+      console.warn('Backend API offline', err);
     }
   };
 
@@ -74,6 +77,18 @@ export function AppProvider({ children }) {
         if (data.length > 0 && !selectedProject) {
           setSelectedProject(data[0]);
         }
+      }
+    } catch (err) {
+      console.warn('Backend API offline', err);
+    }
+  };
+
+  const fetchOpenJobs = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/projects/open-jobs`);
+      if (res.ok) {
+        const data = await res.json();
+        setOpenJobs(data);
       }
     } catch (err) {
       console.warn('Backend API offline', err);
@@ -128,6 +143,109 @@ export function AppProvider({ children }) {
     );
   };
 
+  // Publish a new skill service (Students)
+  const publishService = async (serviceData) => {
+    try {
+      const res = await fetch(`${API_BASE}/students/services`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(serviceData)
+      });
+      if (res.ok) {
+        fetchStudents();
+        setNotifications(prev => [
+          {
+            id: `n-${Date.now()}`,
+            title: 'Skill Published!',
+            message: `Service "${serviceData.title}" is now live in the marketplace.`,
+            time: 'Just now',
+            read: false
+          },
+          ...prev
+        ]);
+      }
+    } catch (err) {
+      console.error('API Error publishing service', err);
+    }
+  };
+
+  // Post a new open campus job requirement (Buyers/Clubs)
+  const postCampusJob = async (jobData) => {
+    try {
+      const res = await fetch(`${API_BASE}/projects/open-jobs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jobData)
+      });
+      if (res.ok) {
+        const newJob = await res.json();
+        setOpenJobs(prev => [newJob, ...prev]);
+        setNotifications(prev => [
+          {
+            id: `n-${Date.now()}`,
+            title: 'Job Requirement Posted!',
+            message: `"${jobData.title}" is now visible on the Campus Job Board.`,
+            time: 'Just now',
+            read: false
+          },
+          ...prev
+        ]);
+        navigateTo('job-board');
+      }
+    } catch (err) {
+      console.error('API Error posting job', err);
+    }
+  };
+
+  // Admin moderation: Delete Service
+  const deleteService = async (serviceId) => {
+    try {
+      const res = await fetch(`${API_BASE}/students/services/${serviceId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        fetchStudents();
+      }
+    } catch (err) {
+      console.error('API Error deleting service', err);
+    }
+  };
+
+  // Admin moderation: Delete Open Job Post
+  const deleteJob = async (jobId) => {
+    try {
+      const res = await fetch(`${API_BASE}/projects/open-jobs/${jobId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setOpenJobs(prev => prev.filter(j => j.id !== jobId));
+      }
+    } catch (err) {
+      console.error('API Error deleting job', err);
+    }
+  };
+
+  // Admin password login verification
+  const verifyAdminPassword = async (password) => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setIsAdminAuthenticated(true);
+          return true;
+        }
+      }
+    } catch (err) {
+      console.error('Admin auth API error', err);
+    }
+    return false;
+  };
+
   const createHiringRequest = async (requestData) => {
     try {
       const res = await fetch(`${API_BASE}/projects/hiring-request`, {
@@ -140,7 +258,6 @@ export function AppProvider({ children }) {
         setProjects(prev => [newProj, ...prev]);
         setSelectedProject(newProj);
         navigateTo('project-workspace', { project: newProj });
-        return;
       }
     } catch (err) {
       console.error('API Error creating hiring request', err);
@@ -257,6 +374,13 @@ export function AppProvider({ children }) {
     projects,
     selectedProject,
     setSelectedProject,
+    openJobs,
+    publishService,
+    postCampusJob,
+    deleteService,
+    deleteJob,
+    verifyAdminPassword,
+    isAdminAuthenticated,
     searchParams,
     setSearchParams,
     wishlist,

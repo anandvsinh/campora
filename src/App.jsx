@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 
 // Inner View Components
 import DiscoverPage from './components/DiscoverPage';
+import JobBoard from './components/JobBoard';
 import StudentProfileView from './components/StudentProfileView';
 import ServiceDetailModal from './components/ServiceDetailModal';
 import ProjectWorkspace from './components/ProjectWorkspace';
@@ -50,6 +51,7 @@ export default function App() {
           )}
 
           {currentTab === 'discover' && <DiscoverPage />}
+          {currentTab === 'job-board' && <JobBoard />}
           {currentTab === 'campus-hubs' && (
             <div className="pt-6">
               <CampusHubs />

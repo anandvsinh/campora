@@ -9,6 +9,76 @@ router.get('/', (req, res) => {
   res.json(db.projects || []);
 });
 
+// GET /api/jobs — Fetch open campus job board postings
+router.get('/open-jobs', (req, res) => {
+  const db = readDB();
+  res.json(db.openJobs || []);
+});
+
+// POST /api/jobs — Post a new open campus job requirement
+router.post('/open-jobs', (req, res) => {
+  const { title, posterName, campus, category, budget, deadline, description } = req.body;
+
+  if (!title || !budget) {
+    return res.status(400).json({ error: 'Title and budget are required' });
+  }
+
+  const newJob = {
+    id: `job-${Date.now().toString().slice(-4)}`,
+    title,
+    posterName: posterName || 'Apex Tech Society',
+    posterAvatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80',
+    campus: campus || 'GLA University',
+    category: category || 'graphic-design',
+    budget: Number(budget),
+    deadline: deadline || '2026-10-01',
+    status: 'Open',
+    description: description || 'Seeking student freelancer for event deliverables.',
+    postedAt: 'Just now'
+  };
+
+  const db = readDB();
+  db.openJobs = [newJob, ...(db.openJobs || [])];
+  writeDB(db);
+
+  res.status(201).json(newJob);
+});
+
+// DELETE /api/jobs/:id — Admin deletion of job post
+router.delete('/open-jobs/:id', (req, res) => {
+  const db = readDB();
+  const jobId = req.params.id;
+
+  const initialLen = (db.openJobs || []).length;
+  db.openJobs = (db.openJobs || []).filter(j => j.id !== jobId);
+
+  if (db.openJobs.length === initialLen) {
+    return res.status(404).json({ error: 'Job post not found' });
+  }
+
+  writeDB(db);
+  res.json({ message: 'Job post deleted successfully' });
+});
+
+// PATCH /api/jobs/:id — Admin modification of job post
+router.patch('/open-jobs/:id', (req, res) => {
+  const db = readDB();
+  const jobId = req.params.id;
+  const { title, budget, description } = req.body;
+
+  const job = (db.openJobs || []).find(j => j.id === jobId);
+  if (!job) {
+    return res.status(404).json({ error: 'Job post not found' });
+  }
+
+  if (title) job.title = title;
+  if (budget) job.budget = Number(budget);
+  if (description) job.description = description;
+
+  writeDB(db);
+  res.json(job);
+});
+
 // POST /api/projects/hiring-request — Create hiring request
 router.post('/hiring-request', (req, res) => {
   const { studentId, studentName, serviceId, title, description, budget, deadline, attachmentName } = req.body;

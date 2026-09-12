@@ -107,6 +107,35 @@ const INITIAL_DB = {
     }
   ],
 
+  openJobs: [
+    {
+      id: 'job-501',
+      title: 'Hackathon Demo Video & Reel Pitch Edit',
+      posterName: 'Team Cypher (GDSC)',
+      posterAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+      campus: 'GLA University',
+      category: 'video-editing',
+      budget: 2500,
+      deadline: '2026-09-25',
+      status: 'Open',
+      description: 'Looking for a video editor to edit a 60-second high energy project pitch reel for smart campus hackathon.',
+      postedAt: 'Sep 12, 2026'
+    },
+    {
+      id: 'job-502',
+      title: 'E-Cell Annual Summit Sponsorship Pitch Deck',
+      posterName: 'E-Cell IIT Delhi',
+      posterAvatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80',
+      campus: 'IIT Delhi',
+      category: 'graphic-design',
+      budget: 3500,
+      deadline: '2026-09-28',
+      status: 'Open',
+      description: 'Need a designer to create a 12-page high-converting Figma pitch deck for corporate sponsors.',
+      postedAt: 'Sep 12, 2026'
+    }
+  ],
+
   projects: [
     {
       id: 'proj-101',
@@ -183,6 +212,13 @@ const INITIAL_DB = {
 export function initDB() {
   if (!fs.existsSync(DB_FILE)) {
     fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DB, null, 2));
+  } else {
+    // Check if openJobs table exists
+    const currentData = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    if (!currentData.openJobs) {
+      currentData.openJobs = INITIAL_DB.openJobs;
+      fs.writeFileSync(DB_FILE, JSON.stringify(currentData, null, 2));
+    }
   }
 }
 
