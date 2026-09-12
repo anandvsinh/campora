@@ -585,7 +585,7 @@ export const CAMPUS_HUBS = [
     activeStudents: 34,
     activeProjects: 12,
     topSkills: ['UI/UX', 'Video Editing', 'React Dev'],
-    image: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=600&q=80'
+    image: '/images/campus/gla_university.png'
   },
   {
     id: 'iit-delhi',
@@ -594,7 +594,7 @@ export const CAMPUS_HUBS = [
     activeStudents: 48,
     activeProjects: 19,
     topSkills: ['Motion Graphics', 'Python', 'Web3'],
-    image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=80'
+    image: '/images/campus/iit_delhi.jpg'
   },
   {
     id: 'du-south',
@@ -603,7 +603,7 @@ export const CAMPUS_HUBS = [
     activeStudents: 52,
     activeProjects: 24,
     topSkills: ['Graphic Design', 'Content Writing', 'PR'],
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80'
+    image: '/images/campus/du_south_campus.png'
   },
   {
     id: 'nift-mumbai',
@@ -612,7 +612,7 @@ export const CAMPUS_HUBS = [
     activeStudents: 29,
     activeProjects: 9,
     topSkills: ['Fashion Photography', 'Branding', 'Art'],
-    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80'
+    image: '/images/campus/nift_mumbai.png'
   }
 ];
 
