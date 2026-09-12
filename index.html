@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAMPORA — Verified Student Talent Marketplace | Skills Deserve Opportunities</title>
+  <meta name="description" content="CAMPORA is the verified student talent marketplace where students showcase skills, publish services, build portfolios, and connect with clubs, startups, and clients.">
+  
+  <!-- Google Fonts: Instrument Serif & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Pure Vanilla CSS stylesheet (Zero build tools required) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Glass Navigation Header -->
+  <header class="navbar">
+    <div class="container navbar-inner glass-pill">
+      
+      <!-- Brand Logo -->
+      <a href="#" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+        <svg width="38" height="38" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="capGrad" x1="100" y1="50" x2="350" y2="250" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#0077B6" />
+              <stop offset="100%" stop-color="#003554" />
+            </linearGradient>
+            <linearGradient id="waveGrad" x1="100" y1="180" x2="450" y2="450" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00B4D8" />
+              <stop offset="50%" stop-color="#06B6D4" />
+              <stop offset="100%" stop-color="#0077B6" />
+            </linearGradient>
+          </defs>
+          <path d="M 90,160 L 280,70 L 450,160 L 280,230 Z" fill="url(#capGrad)" />
+          <circle cx="130" cy="275" r="8" fill="#00B4D8" />
+          <path d="M 160,220 C 100,280 120,400 230,440 C 340,480 440,400 450,310 C 430,370 340,430 250,400 C 180,380 150,300 190,240 Z" fill="url(#waveGrad)" />
+          <circle cx="215" cy="285" r="22" fill="url(#waveGrad)" />
+          <circle cx="340" cy="315" r="22" fill="url(#waveGrad)" />
+          <path d="M 255,335 Q 275,325 295,335 Q 275,355 255,335 Z" fill="#FFFFFF" />
+        </svg>
+        <div>
+          <div style="font-weight: 800; font-size: 20px; color: #F0F9FF; letter-spacing: 0.05em; line-height: 1;">CAMPORA</div>
+          <div style="font-size: 9px; font-weight: 700; color: #00B4D8; letter-spacing: 0.25em; text-transform: uppercase; margin-top: 2px;">Student Skill Marketplace</div>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="#discover" class="active">Discover Talent</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#campus-hubs">Campus Hubs</a></li>
+      </ul>
+
+      <!-- Persona Switcher & CTA -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <select id="persona-select" class="role-switcher-select">
+          <option value="guest">👁️ Guest Visitor</option>
+          <option value="student">🎨 Student Seller (Aarav)</option>
+          <option value="buyer">🏢 Buyer (Tech Society)</option>
+          <option value="admin">🛡️ Platform Admin</option>
+        </select>
+
+        <a href="#discover" class="btn-primary">Offer Your Skill</a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      
+      <!-- Left Editorial Text -->
+      <div>
+        <div class="section-tag">
+          <span>✨ Verified Student Talent Marketplace</span>
+        </div>
+
+        <h1 class="hero-title">
+          Your skill is <br>
+          <span class="gradient-text italic font-normal">worth something.</span>
+        </h1>
+
+        <p class="hero-subtext">
+          Discover talented students, hire for real projects, and turn campus skills into real opportunities. Every student has a skill. Every skill deserves an opportunity.
+        </p>
+
+        <div style="display: flex; gap: 16px;">
+          <a href="#discover" class="btn-primary">Explore Talent →</a>
+          <a href="#how-it-works" class="btn-secondary">How it works</a>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(240,249,255,0.1); display: flex; gap: 32px;">
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: #00B4D8;">100%</div>
+            <div style="font-size: 12px; color: rgba(240,249,255,0.6);">Verified Identity</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: #00B4D8;">₹0</div>
+            <div style="font-size: 12px; color: rgba(240,249,255,0.6);">Upfront Upkeep</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: #00B4D8;">4.9 ★</div>
+            <div style="font-size: 12px; color: rgba(240,249,255,0.6);">Avg Student Rating</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Showcase Frame -->
+      <div style="position: relative;">
+        <div class="glass-card" style="padding: 20px;">
+          <div style="height: 280px; border-radius: 16px; overflow: hidden; position: relative;">
+            <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80" alt="Student Showcase" style="width: 100%; height: 100%; object-fit: cover;" />
+            <div style="position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-end;">
+              <div>
+                <span class="verified-badge">Featured Talent</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: #F0F9FF; margin-top: 4px;">TechnoFest Brand System</h3>
+                <p style="font-size: 12px; color: rgba(240,249,255,0.7);">by Aarav Sharma · GLA University</p>
+              </div>
+              <span style="font-size: 14px; font-weight: 700; color: #00B4D8; background: rgba(7,13,20,0.9); padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(0,180,216,0.3);">₹499</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Metadata Badges -->
+        <div class="glass-pill floating-badge badge-1">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; color: #00B4D8;">✓</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #F0F9FF;">Verified Student</div>
+            <div style="font-size: 10px; color: rgba(240,249,255,0.6);">Institutional Identity</div>
+          </div>
+        </div>
+
+        <div class="glass-pill floating-badge badge-2">
+          <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center; color: #10B981;">★</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #F0F9FF;">4.9 ★ Rating</div>
+            <div style="font-size: 10px; color: #10B981;">Verified Client Reviews</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Discover Section -->
+  <section id="discover" style="padding: 60px 0;">
+    <div class="container" style="text-align: center;">
+      <span class="section-tag">Instant Skill Search</span>
+      <h2 class="font-serif" style="font-size: 48px; margin-top: 8px;">Find the right skill.</h2>
+      <p style="color: rgba(240,249,255,0.7); margin-top: 8px; margin-bottom: 32px;">From your next poster to your next website, find students who can make it happen.</p>
+
+      <div class="search-bar-wrap">
+        <span class="search-icon-pos">🔍</span>
+        <input type="text" id="search-input" class="search-input" placeholder="What do you need help with? (e.g. poster, website, video edit)...">
+      </div>
+
+      <!-- Categories Pill Bar -->
+      <div id="categories" style="display: flex; justify-content: center; gap: 10px; margin-top: 24px; flex-wrap: wrap;">
+        <button onclick="setCategoryFilter('all')" class="btn-secondary" style="font-size: 12px; padding: 6px 16px;">All Skills</button>
+        <button onclick="setCategoryFilter('graphic-design')" class="btn-secondary" style="font-size: 12px; padding: 6px 16px;">Graphic Design (342)</button>
+        <button onclick="setCategoryFilter('video-editing')" class="btn-secondary" style="font-size: 12px; padding: 6px 16px;">Video Editing (218)</button>
+        <button onclick="setCategoryFilter('coding')" class="btn-secondary" style="font-size: 12px; padding: 6px 16px;">Coding & Web Dev (290)</button>
+        <button onclick="setCategoryFilter('photography')" class="btn-secondary" style="font-size: 12px; padding: 6px 16px;">Photography (164)</button>
+      </div>
+
+      <!-- Rendered Student Cards Grid -->
+      <div id="students-grid" class="grid-3" style="margin-top: 40px; text-align: left;"></div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" style="padding: 80px 0; background: rgba(13,23,34,0.4); border-y: 1px solid rgba(240,249,255,0.1);">
+    <div class="container" style="text-align: center;">
+      <span class="section-tag">The CAMPORA Lifecycle</span>
+      <h2 class="font-serif" style="font-size: 48px; margin-top: 8px;">How CAMPORA works.</h2>
+
+      <div class="grid-4" style="margin-top: 48px; text-align: left;">
+        <div class="glass-card" style="padding: 24px;">
+          <div style="font-family: var(--font-serif); font-size: 32px; font-weight: 700; color: #00B4D8;">01</div>
+          <h3 style="font-weight: 700; font-size: 18px; margin-top: 8px;">Create & Verify</h3>
+          <p style="font-size: 12px; color: rgba(240,249,255,0.7); margin-top: 8px;">Students create profiles and verify identity via college email or ID cards.</p>
+        </div>
+        <div class="glass-card" style="padding: 24px;">
+          <div style="font-family: var(--font-serif); font-size: 32px; font-weight: 700; color: #00B4D8;">02</div>
+          <h3 style="font-weight: 700; font-size: 18px; margin-top: 8px;">Showcase Portfolio</h3>
+          <p style="font-size: 12px; color: rgba(240,249,255,0.7); margin-top: 8px;">Upload skills, service packages, portfolio case studies, and starting prices.</p>
+        </div>
+        <div class="glass-card" style="padding: 24px;">
+          <div style="font-family: var(--font-serif); font-size: 32px; font-weight: 700; color: #00B4D8;">03</div>
+          <h3 style="font-weight: 700; font-size: 18px; margin-top: 8px;">Hire & Collaborate</h3>
+          <p style="font-size: 12px; color: rgba(240,249,255,0.7); margin-top: 8px;">Buyers request projects, communicate in live chat, and escrow funds safely.</p>
+        </div>
+        <div class="glass-card" style="padding: 24px;">
+          <div style="font-family: var(--font-serif); font-size: 32px; font-weight: 700; color: #00B4D8;">04</div>
+          <h3 style="font-weight: 700; font-size: 18px; margin-top: 8px;">Grow Reputation</h3>
+          <p style="font-size: 12px; color: rgba(240,249,255,0.7); margin-top: 8px;">Completed work generates verified reviews and increases your Trust Score (94/100).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hiring Modal Popup -->
+  <div id="hire-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(240,249,255,0.1); padding-bottom: 16px;">
+        <h3 class="font-serif" style="font-size: 24px;">Hire <span id="modal-student-name">Student</span></h3>
+        <button onclick="closeHireModal()" style="background: none; border: none; color: #F0F9FF; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="submitHireRequest(event)" style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <label style="font-size: 12px; font-weight: 600; color: rgba(240,249,255,0.8); display: block; margin-bottom: 6px;">Project Title</label>
+          <input type="text" required placeholder="e.g. Fest Poster Design & Banner Kit" style="width: 100%; padding: 10px 14px; border-radius: 10px; background: #070D14; border: 1px solid rgba(240,249,255,0.1); color: #F0F9FF; font-size: 12px;">
+        </div>
+
+        <div>
+          <label style="font-size: 12px; font-weight: 600; color: rgba(240,249,255,0.8); display: block; margin-bottom: 6px;">Project Requirements & Brief</label>
+          <textarea required rows="3" placeholder="Describe scope, required deliverables, color palette..." style="width: 100%; padding: 10px 14px; border-radius: 10px; background: #070D14; border: 1px solid rgba(240,249,255,0.1); color: #F0F9FF; font-size: 12px;"></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #070D14; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,180,216,0.3);">
+          <span style="font-size: 12px; color: rgba(240,249,255,0.7);">Offered Budget:</span>
+          <span id="modal-price" style="font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: #00B4D8;">₹499</span>
+        </div>
+
+        <button type="submit" class="btn-primary" style="justify-content: center; padding: 12px; font-size: 14px;">
+          Send Hiring Request →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 800; font-size: 18px; color: #F0F9FF;">CAMPORA</div>
+        <div style="font-size: 11px; color: rgba(240,249,255,0.5); margin-top: 4px;">© 2026 CAMPORA Student Skill Marketplace. Every skill deserves an opportunity.</div>
+      </div>
+      <div style="font-size: 12px; color: #00B4D8;">
+        ✓ 100% Standalone HTML, CSS & Vanilla JS
+      </div>
+    </div>
+  </footer>
+
+  <!-- Pure Vanilla JavaScript logic -->
+  <script src="app.js"></script>
+</body>
+</html>
