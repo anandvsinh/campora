@@ -12,13 +12,51 @@ export function AppProvider({ children }) {
   // Tabs: 'home', 'discover', 'job-board', 'student-profile', 'service-detail', 'project-workspace', 'student-dashboard', 'buyer-dashboard', 'admin', 'wishlist', 'campus-hubs'
   const [currentTab, setCurrentTab] = useState('home');
 
-  const [gigs, setGigs] = useState(INITIAL_GIGS);
+  const [gigs, setGigs] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('campora_gigs');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+    }
+    return INITIAL_GIGS;
+  });
+
   const [students, setStudents] = useState(STUDENT_PROFILES);
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
-  const [openJobs, setOpenJobs] = useState(INITIAL_OPEN_JOBS);
+
+  const [openJobs, setOpenJobs] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('campora_open_jobs');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+    }
+    return INITIAL_OPEN_JOBS;
+  });
+
   const [verifications, setVerifications] = useState([]);
   const [reviews, setReviews] = useState(VERIFIED_REVIEWS);
   const [wishlist, setWishlist] = useState(['student-aarav', 'student-priya']);
+
+  // Sync state to LocalStorage for offline/Vercel persistence
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('campora_gigs', JSON.stringify(gigs));
+    }
+  }, [gigs]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('campora_open_jobs', JSON.stringify(openJobs));
+    }
+  }, [openJobs]);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -160,153 +198,126 @@ export function AppProvider({ children }) {
 
   // Publish a new skill gig (Admin or Student) with instant frontend & backend sync
   const publishGig = async (gigData) => {
+    const newGig = {
+      id: `gig-${Date.now().toString().slice(-4)}`,
+      title: gigData.title,
+      studentId: gigData.studentId || 'student-aarav',
+      studentName: gigData.studentName || 'Aarav Sharma',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+      college: gigData.college || 'GLA University',
+      verified: true,
+      category: gigData.category || 'graphic-design',
+      price: Number(gigData.price) || 499,
+      deliveryDays: Number(gigData.deliveryDays) || 2,
+      revisions: Number(gigData.revisions) || 3,
+      rating: 5.0,
+      salesCount: 0,
+      description: gigData.description || 'High quality deliverable on time.',
+      image: gigData.image || 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80'
+    };
+
+    setGigs(prev => [newGig, ...prev]);
+    setNotifications(prev => [
+      {
+        id: `n-${Date.now()}`,
+        title: 'Skill Gig Added Live!',
+        message: `Gig "${newGig.title}" is now active in the marketplace.`,
+        time: 'Just now',
+        read: false
+      },
+      ...prev
+    ]);
+
     try {
-      const res = await fetch(`${API_BASE}/students/gigs`, {
+      fetch(`${API_BASE}/students/gigs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(gigData)
-      });
-      if (res.ok) {
-        const newGig = await res.json();
-        setGigs(prev => [newGig, ...prev]);
-        setNotifications(prev => [
-          {
-            id: `n-${Date.now()}`,
-            title: 'Skill Gig Added Live!',
-            message: `Gig "${newGig.title}" is now active in the marketplace.`,
-            time: 'Just now',
-            read: false
-          },
-          ...prev
-        ]);
-        return newGig;
-      }
-    } catch (err) {
-      console.error('API Error publishing gig', err);
-    }
+      }).catch(err => console.warn('API sync warn', err));
+    } catch (err) {}
+
+    return newGig;
   };
 
   // Delete a skill gig (Admin moderation)
   const deleteGig = async (gigId) => {
+    setGigs(prev => prev.filter(g => g.id !== gigId));
+    setNotifications(prev => [
+      {
+        id: `n-${Date.now()}`,
+        title: 'Gig Removed',
+        message: `Skill gig was removed by platform admin.`,
+        time: 'Just now',
+        read: false
+      },
+      ...prev
+    ]);
+
     try {
-      const res = await fetch(`${API_BASE}/students/gigs/${gigId}`, {
+      fetch(`${API_BASE}/students/gigs/${gigId}`, {
         method: 'DELETE'
-      });
-      if (res.ok) {
-        setGigs(prev => prev.filter(g => g.id !== gigId));
-        setNotifications(prev => [
-          {
-            id: `n-${Date.now()}`,
-            title: 'Gig Removed',
-            message: `Skill gig was removed by platform admin.`,
-            time: 'Just now',
-            read: false
-          },
-          ...prev
-        ]);
-      }
-    } catch (err) {
-      console.error('API Error deleting gig', err);
-    }
+      }).catch(err => console.warn('API sync warn', err));
+    } catch (err) {}
   };
 
   // Publish a new skill service (Students) with instant frontend & backend sync
   const publishService = async (serviceData) => {
-    try {
-      const res = await fetch(`${API_BASE}/students/gigs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(serviceData)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        
-        setGigs(prev => [data, ...prev]);
-        setStudents(prev => prev.map(s => {
-          if (s.id === (serviceData.studentId || 'student-aarav')) {
-            return {
-              ...s,
-              services: [data, ...(s.services || [])]
-            };
-          }
-          return s;
-        }));
-
-        setNotifications(prev => [
-          {
-            id: `n-${Date.now()}`,
-            title: 'Skill Published Live!',
-            message: `Service "${serviceData.title}" is now live in the marketplace.`,
-            time: 'Just now',
-            read: false
-          },
-          ...prev
-        ]);
-        
-        navigateTo('discover');
-      }
-    } catch (err) {
-      console.error('API Error publishing service', err);
-    }
+    await publishGig(serviceData);
+    navigateTo('discover');
   };
 
   // Post a new open campus job requirement (Buyers/Clubs)
   const postCampusJob = async (jobData) => {
+    const newJob = {
+      id: `job-${Date.now().toString().slice(-4)}`,
+      title: jobData.title,
+      posterName: jobData.posterName || 'Campus Buyer',
+      posterAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+      campus: jobData.campus || 'GLA University',
+      category: jobData.category || 'graphic-design',
+      budget: Number(jobData.budget) || 1500,
+      deadline: jobData.deadline || '2026-10-01',
+      status: 'Open',
+      description: jobData.description || 'Project requirement posted by club / buyer.',
+      postedAt: 'Just now'
+    };
+
+    setOpenJobs(prev => [newJob, ...prev]);
+    setNotifications(prev => [
+      {
+        id: `n-${Date.now()}`,
+        title: 'Job Requirement Posted!',
+        message: `"${jobData.title}" is now visible on the Campus Job Board.`,
+        time: 'Just now',
+        read: false
+      },
+      ...prev
+    ]);
+
     try {
-      const res = await fetch(`${API_BASE}/projects/open-jobs`, {
+      fetch(`${API_BASE}/projects/open-jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jobData)
-      });
-      if (res.ok) {
-        const newJob = await res.json();
-        setOpenJobs(prev => [newJob, ...prev]);
-        setNotifications(prev => [
-          {
-            id: `n-${Date.now()}`,
-            title: 'Job Requirement Posted!',
-            message: `"${jobData.title}" is now visible on the Campus Job Board.`,
-            time: 'Just now',
-            read: false
-          },
-          ...prev
-        ]);
-        navigateTo('job-board');
-      }
-    } catch (err) {
-      console.error('API Error posting job', err);
-    }
+      }).catch(err => console.warn('API sync warn', err));
+    } catch (err) {}
+
+    navigateTo('job-board');
   };
 
   // Admin moderation: Delete Service
   const deleteService = async (serviceId) => {
-    try {
-      const res = await fetch(`${API_BASE}/students/services/${serviceId}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        setStudents(prev => prev.map(s => ({
-          ...s,
-          services: (s.services || []).filter(srv => srv.id !== serviceId)
-        })));
-      }
-    } catch (err) {
-      console.error('API Error deleting service', err);
-    }
+    deleteGig(serviceId);
   };
 
   // Admin moderation: Delete Open Job Post
   const deleteJob = async (jobId) => {
+    setOpenJobs(prev => prev.filter(j => j.id !== jobId));
     try {
-      const res = await fetch(`${API_BASE}/projects/open-jobs/${jobId}`, {
+      fetch(`${API_BASE}/projects/open-jobs/${jobId}`, {
         method: 'DELETE'
-      });
-      if (res.ok) {
-        setOpenJobs(prev => prev.filter(j => j.id !== jobId));
-      }
-    } catch (err) {
-      console.error('API Error deleting job', err);
-    }
+      }).catch(err => console.warn('API sync warn', err));
+    } catch (err) {}
   };
 
   // Admin password login verification

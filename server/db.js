@@ -176,24 +176,40 @@ const INITIAL_DB = {
   verifications: []
 };
 
-// Initialize DB file
+let memoryDB = JSON.parse(JSON.stringify(INITIAL_DB));
+
+// Initialize DB file safely
 export function initDB() {
-  fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DB, null, 2));
+  try {
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DB, null, 2));
+    }
+  } catch (err) {
+    console.warn('initDB: Read-only filesystem detected, using in-memory database', err.message);
+  }
 }
 
 export function readDB() {
-  if (!fs.existsSync(DB_FILE)) {
-    initDB();
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const data = fs.readFileSync(DB_FILE, 'utf-8');
+      const parsed = JSON.parse(data);
+      if (parsed) {
+        memoryDB = parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('readDB: File read warning, fallback to memoryDB', err.message);
   }
-  const data = fs.readFileSync(DB_FILE, 'utf-8');
-  const parsed = JSON.parse(data);
-  if (!parsed.gigs) {
-    parsed.gigs = INITIAL_GIGS;
-    fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2));
-  }
-  return parsed;
+  return memoryDB;
 }
 
 export function writeDB(data) {
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  memoryDB = data;
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.warn('writeDB: Safe fallback in read-only environment', err.message);
+  }
 }
+
