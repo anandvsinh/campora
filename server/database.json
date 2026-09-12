@@ -1,6 +1,40 @@
 {
   "gigs": [
     {
+      "id": "gig-4274",
+      "title": "iu",
+      "studentId": "student-aarav",
+      "studentName": "Aarav Sharma",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "college": "GLA University",
+      "verified": true,
+      "category": "graphic-design",
+      "price": 499,
+      "deliveryDays": 2,
+      "revisions": 3,
+      "rating": 5,
+      "salesCount": 0,
+      "description": "ukyu",
+      "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+      "id": "gig-6215",
+      "title": "3D Animation & Motion Graphic Intro",
+      "studentId": "student-aarav",
+      "studentName": "Aarav Sharma",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "college": "GLA University",
+      "verified": true,
+      "category": "graphic-design",
+      "price": 1299,
+      "deliveryDays": 2,
+      "revisions": 3,
+      "rating": 5,
+      "salesCount": 0,
+      "description": "Professional 3D motion graphics intro for college fests",
+      "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80"
+    },
+    {
       "id": "gig-101",
       "title": "High-Impact College Fest Poster & Instagram Banner Pack",
       "studentId": "student-aarav",
@@ -177,7 +211,47 @@
       "postedAt": "Sep 12, 2026"
     }
   ],
-  "projects": [],
+  "projects": [
+    {
+      "id": "proj-7440",
+      "title": "kj",
+      "buyerName": "Apex Tech Society",
+      "buyerAvatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+      "studentId": "student-aarav",
+      "studentName": "Aarav Sharma",
+      "serviceId": "gig-101",
+      "budget": 499,
+      "platformFee": 50,
+      "studentNetEarnings": 449,
+      "deadline": "2026-09-22",
+      "status": "Requested",
+      "stageIndex": 1,
+      "description": "kj",
+      "requirements": "Standard quality requirements",
+      "files": [
+        {
+          "name": "Project_Brief.pdf",
+          "size": "1.8 MB",
+          "date": "Just now"
+        }
+      ],
+      "messages": [
+        {
+          "id": "m-1789246017440",
+          "sender": "system",
+          "text": "Hiring request sent · Budget: ₹499 · Deadline: 2026-09-22",
+          "timestamp": "Just now"
+        },
+        {
+          "id": "m-1789246017441",
+          "sender": "buyer",
+          "senderName": "Apex Tech Society",
+          "text": "kj",
+          "timestamp": "Just now"
+        }
+      ]
+    }
+  ],
   "reviews": [],
   "verifications": []
 }
