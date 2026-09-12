@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { INITIAL_GIGS, INITIAL_OPEN_JOBS, STUDENT_PROFILES, INITIAL_PROJECTS, VERIFIED_REVIEWS } from '../data/mockData';
 
 const API_BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
   ? 'http://localhost:5000/api' 
@@ -11,12 +12,12 @@ export function AppProvider({ children }) {
   // Tabs: 'home', 'discover', 'job-board', 'student-profile', 'service-detail', 'project-workspace', 'student-dashboard', 'buyer-dashboard', 'admin', 'wishlist', 'campus-hubs'
   const [currentTab, setCurrentTab] = useState('home');
 
-  const [gigs, setGigs] = useState([]);
-  const [students, setStudents] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [openJobs, setOpenJobs] = useState([]);
+  const [gigs, setGigs] = useState(INITIAL_GIGS);
+  const [students, setStudents] = useState(STUDENT_PROFILES);
+  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [openJobs, setOpenJobs] = useState(INITIAL_OPEN_JOBS);
   const [verifications, setVerifications] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(VERIFIED_REVIEWS);
   const [wishlist, setWishlist] = useState(['student-aarav', 'student-priya']);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
